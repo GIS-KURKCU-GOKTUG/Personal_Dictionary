@@ -1,0 +1,1 @@
+{"kelime_1": "kelime_2", "iyi": "good", "araba": "car"}
