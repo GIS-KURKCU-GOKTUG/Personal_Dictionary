@@ -50,8 +50,10 @@ Kelime Gir: ...
 **********************************************
 """
 # import
+from ast import keyword
 import os
 import json
+import random
 from time import sleep
 
 # class for file operations
@@ -169,7 +171,79 @@ class Operations:
 #======================================================
 #======================================================
 #======================================================
+# QUIZ
+class Quiz:
 
+    # __init__
+    def __init__(self, language, filename_en = "en-dict.txt", filename_tr = "tr-dict.txt"):
+        self.language = language
+        self.filename_en = filename_en
+        self.filename_tr = filename_tr
+
+    # ask question
+    def askQuestion(self):
+        #English File
+        if self.language == "1":
+            file = open("./files/" + self.filename_en)
+        #Turkce File
+        elif self.language == "2":
+            file = open("./files/" + self.filename_tr)
+        words = json.load(file)
+        keyWords = words.keys()
+        keyWords = list(keyWords)
+        #how many question 
+        how_many_question = int(input(f"how many question(max {len(keyWords)}): "))
+        #quesitons
+        trueAnswer = 0
+        for i in range(0, how_many_question):
+            #find random keys
+            randomKey = random.choice(keyWords)
+            print(f"RandomKey:{randomKey}")
+            if self.language == "1":
+                valueWord = input("Please enter Turkish: ")
+            elif self.language == "2":
+                valueWord = input("Please enter English: ")            
+            #if key = value => answer true
+            if valueWord == words[randomKey]:
+                print("Good Job!!")
+                trueAnswer += 1
+            #else you have 3 rights for find true word
+            else:
+                print("Wrong Answer... Try Again..")
+                for j in range(0,3):
+                    if j < 2:
+                        if self.language == "1":
+                            print(f"RandomKey:{randomKey}")
+                            valueWord = input("Please enter Turkish: ")
+                        elif self.language == "2":
+                            print(f"RandomKey:{randomKey}")
+                            valueWord = input("Please enter English: ")
+                        if valueWord == words[randomKey]:
+                            print("Good Job!!")
+                            trueAnswer += 1
+                            break
+                        else:
+                            print("Wrong Answer... Try Again..")
+                    elif j == 2:
+                        print(f"RandomKey:{randomKey}")
+                        valueWord = input("Please enter Turkish: ")
+                        if valueWord == words[randomKey]:
+                            print("Good Job!!")
+                            trueAnswer += 1
+                            break
+                        else:    
+                            print("You cant find True word.")
+        if trueAnswer == how_many_question:
+            print("You are Great. You have full")
+        elif trueAnswer < how_many_question and how_many_question - 5 <= trueAnswer:
+            print(f"You must study. You have {trueAnswer} true answers.")
+        elif trueAnswer < how_many_question - 5:
+            print(f"You are bad. You do only {trueAnswer} true answers.")
+        else: 
+            print("Somethings Wrong...")
+#======================================================
+#======================================================
+#======================================================
 
 #Start - Controls
 print("Welcome. First, a few checks will be run.")
@@ -178,12 +252,12 @@ sleep(3)
 print("First Control: OK\nSecond Control Start")
 Create_File().createFile()
 sleep(3)
-print("Second Control: OK\n\nAll Process: OK\nYou can use the program. If you think somethings are wrong, please contact with Mr Kurkcu(gis.goktugkurkcu@gmail.com).\n\n\nProgram Started...(Press 3 for Quit.)")
+print("Second Control: OK\n\nAll Process: OK\nYou can use the program. If you think somethings are wrong, please contact with Mr Kurkcu(gis.goktugkurkcu@gmail.com).\n\n\nProgram Started...(Press 4 for Quit.)")
 #End -Controls
 #Start Program
 while True:
     
-    selectLanguage = input("\n\nPlease select language.\n1-English\n2-Türkçe\n\nPlease select 1 or 2(not word, enter numbers): ")
+    selectLanguage = input("\n\nPlease select language or Quiz.\n1-English\n2-Türkçe\n3-Quiz\n\nPlease select 1, 2 or 3(not word, enter numbers): ")
     
     if selectLanguage == "1":
         word = input("Enter Word: ")
@@ -193,8 +267,13 @@ while True:
         kelime = input("Kelime Girin: ")
         Operations(selectLanguage = selectLanguage, kelime = kelime).findWord()
 
-    #QUIT
+    #QUIZ
     elif selectLanguage == "3":
+        language = input("\n\nPlease select language.\n1-English\n2-Türkçe\n\nPlease select 1 or 2(not word, enter numbers): ")
+        Quiz(language).askQuestion()
+
+    #QUIT
+    elif selectLanguage == "4":
         break
 
     # Error
